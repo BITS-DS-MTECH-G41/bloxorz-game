@@ -17,210 +17,41 @@
 import copy
 import sys
 import queue as Q
+from reuse import readMatrix
+from block import Block
 
-def readMap(fileMap):
-    with open(fileMap) as f:
-        MAP_ROW, MAP_COL, xStart, yStart = [int(x) for x in next(f).split()] # read first line
-        sourceMap = []
-        countMapLine = 1
-        for line in f: # read map
-            countMapLine += 1
-            sourceMap.append([int(x) for x in line.split()])
-            if countMapLine > MAP_ROW: break
+# def readMap(fileMap):
+#     with open(fileMap) as f:
+#         MATRIX_X, MATRIX_Y, xStart, yStart = [int(x) for x in next(f).split()] # read first line
+#         sourceMap = []
+#         countMapLine = 1
+#         for line in f: # read map
+#             countMapLine += 1
+#             sourceMap.append([int(x) for x in line.split()])
+#             if countMapLine > MATRIX_X: break
 
-        # read managedBoard
-        manaBoa = []
-        for line in f: # read manaBoa
-            # 2 2 4 4 4 5
-            manaBoa.append([int(x) for x in line.split()])
+#         # read managedBoard
+#         boardState = []
+#         for line in f: # read boardState
+#             # 2 2 4 4 4 5
+#             boardState.append([int(x) for x in line.split()])
 
-    print("\nYOUR MAP LOOK LIKE THIS:")
-    for item in sourceMap:
-        print(item)
-    print("Start at (",xStart, ",", yStart,")")
-    print("ManaBoa:")
-    for item in manaBoa:
-        print(item)
-    print("======================================")
-    return MAP_ROW, MAP_COL, xStart, yStart, sourceMap, manaBoa
-
-
-class Block:
-
-    def __init__(self, x, y, rot, parent, board, x1=None,y1=None):
-        self.x      = x
-        self.y      = y
-        self.rot    = rot  
-        self.parent = parent
-        self.board  = copy.deepcopy(board)
-        self.x1     = x1
-        self.y1     = y1
-    
-    def __lt__(self, block):
-        return True
-    def __gt__(self, block):
-        return True
-
-    def move_up(self):
-        newBlock = Block(self.x, self.y, self.rot, self, self.board)
-
-        if self.rot == "STANDING":
-            newBlock.y -= 2 
-            newBlock.rot = "LAYING_Y"
-
-        elif newBlock.rot == "LAYING_X":
-            newBlock.y -= 1
-        
-        elif newBlock.rot == "LAYING_Y":
-            newBlock.y -= 1
-            newBlock.rot = "STANDING"
-        
-        return newBlock 
-
-    def move_down(self):
-        newBlock = Block(self.x, self.y, self.rot, self, self.board)
-
-        if newBlock.rot == "STANDING":
-            newBlock.y += 1
-            newBlock.rot = "LAYING_Y"
-
-        elif newBlock.rot == "LAYING_X":
-            newBlock.y += 1
-
-        elif newBlock.rot == "LAYING_Y":
-            newBlock.y += 2
-            newBlock.rot = "STANDING"
-        return newBlock 
-
-    def move_right(self):
-        newBlock = Block(self.x, self.y, self.rot, self, self.board)
-    
-        if newBlock.rot == "STANDING":
-            newBlock.x += 1
-            newBlock.rot = "LAYING_X"
-
-        elif newBlock.rot == "LAYING_X":
-            newBlock.x += 2
-            newBlock.rot = "STANDING"
-
-        elif newBlock.rot == "LAYING_Y":
-             newBlock.x += 1
-        return newBlock
-
-    def move_left(self):
-        newBlock = Block(self.x, self.y, self.rot, self, self.board)
-
-        if newBlock.rot == "STANDING":
-            newBlock.rot = "LAYING_X"
-            newBlock.x -= 2
-
-        elif newBlock.rot == "LAYING_X":
-            newBlock.x -= 1
-            newBlock.rot = "STANDING"
-
-        elif newBlock.rot == "LAYING_Y":
-            newBlock.x -= 1
-
-        return newBlock 
-
-    # FOR CASE SPLIT
-    def split_move_up(self):
-        newBlock = Block(self.x, self.y, self.rot, self, self.board, self.x1, self.y1)
-        newBlock.y -= 1
-        return newBlock 
-
-    def split_move_down(self):
-        newBlock = Block(self.x, self.y, self.rot, self, self.board, self.x1, self.y1)
-        newBlock.y += 1
-        return newBlock 
-
-
-    def split_move_left(self):
-        newBlock = Block(self.x, self.y, self.rot, self, self.board, self.x1, self.y1)
-        newBlock.x -= 1
-        return newBlock 
-
-
-    def split_move_right(self):
-        newBlock = Block(self.x, self.y, self.rot, self, self.board, self.x1, self.y1)
-        newBlock.x += 1
-        return newBlock 
-
-    def split1_move_up(self):
-        newBlock = Block(self.x, self.y, self.rot, self, self.board, self.x1, self.y1)
-        newBlock.y1 -= 1
-        return newBlock 
-
-    def split1_move_down(self):
-        newBlock = Block(self.x, self.y, self.rot, self, self.board, self.x1, self.y1)
-        newBlock.y1 += 1
-        return newBlock 
-
-    def split1_move_left(self):
-        newBlock = Block(self.x, self.y, self.rot, self, self.board, self.x1, self.y1)
-        newBlock.x1 -= 1
-        return newBlock 
-
-    def split1_move_right(self):
-        newBlock = Block(self.x, self.y, self.rot, self, self.board, self.x1, self.y1)
-        newBlock.x1 += 1
-        return newBlock 
-
-    def disPlayPosition(self):
-        if self.rot != "SPLIT":
-            print(self.rot, self.x, self.y)
-        else:
-            print(self.rot, self.x, self.y, self.x1, self.y1)
-    
-    def disPlayBoard(self):
-        
-        # local definition
-        x   = self.x
-        y   = self.y
-        x1  = self.x1
-        y1  = self.y1
-        rot = self.rot
-        board = self.board
-
-        # let's go
-
-        if rot != "SPLIT":
-            
-            for i in range(len(board)): # for ROW
-                print("",end='  ')
-                for j in range(len(board[i])): # for COL in a ROW
-
-                    if (i==y and j==x and rot=="STANDING") or \
-                            ((i==y and j==x) or (i==y and j==x+1) and rot=="LAYING_X") or \
-                            ((i==y and j==x) or (i==y+1 and j==x) and rot=="LAYING_Y"):
-
-                        print("x",end=' ')
-
-                    elif(board[i][j]==0):
-                        print(" ",end=' ')
-                    else:
-                        print(board[i][j], end=' ')
-                print("")
-        else: # CASE SPLIT
-            for i in range(len(board)): # for ROW
-                print("",end='  ')
-                for j in range(len(board[i])): # for COL
-
-                    if (i==y and j==x) or (i==y1 and j==x1):
-                        print("x",end=' ')
-
-                    elif(board[i][j]==0):
-                        print(" ",end=' ')
-                    else:
-                        print(board[i][j], end=' ')
-                print("")
+#     print("\nInitial Game MATRIX looks like this:")
+#     for item in sourceMap:
+#         print(item)
+#     print("Start at (",xStart, ",", yStart,")")
+#     print("boardState:")
+#     for item in boardState:
+#         print(item)
+#     print("======================================")
+#     return MATRIX_X, MATRIX_Y, xStart, yStart, sourceMap, boardState
             
     
 # Case 3: Chữ X
 def isNumberThree(block,x,y):
     board = block.board
 
-    for item in ManaBoa:
+    for item in boardState:
 
         if (x,y) ==  (item[0], item[1]):
 
@@ -277,7 +108,7 @@ def isNumberFour(block,x,y):
     
     #print("(x-y) = (", x,"-", y,")")
 
-    for item in ManaBoa:
+    for item in boardState:
         if (x,y) ==  (item[0], item[1]):
             num = item[2]
             for i in range(num):
@@ -289,7 +120,7 @@ def isNumberFour(block,x,y):
 def isNumberFive(block,x,y):
     board = block.board
 
-    for item in ManaBoa:
+    for item in boardState:
         if (x,y) ==  (item[0], item[1]):
 
 
@@ -341,7 +172,7 @@ def isNumberFive(block,x,y):
 def isNumberSix(block,x,y):
     board = block.board
 
-    for item in ManaBoa:
+    for item in boardState:
         if (x,y) ==  (item[0], item[1]):
             num = item[2]
             for i in range(num):
@@ -353,7 +184,7 @@ def isNumberSix(block,x,y):
 def isNumberSeven(block,x,y):  
     board = block.board
     array = []    
-    for item in ManaBoa:
+    for item in boardState:
         if (x,y) ==  (item[0], item[1]):
             num = item[2]
             # format x7 y7 2 x y x1 y1
@@ -371,7 +202,7 @@ def isNumberSeven(block,x,y):
 def isNumberEight(block,x,y):
     board = block.board
 
-    for item in ManaBoa:
+    for item in boardState:
         if (x,y) ==  (item[0], item[1]):
 
             num = item[2]
@@ -475,23 +306,23 @@ def isFloor(block):
     board = block.board
     
     if x >= 0 and y >= 0 and \
-            y < MAP_ROW and x < MAP_COL and \
+            y < MATRIX_X and x < MATRIX_Y and \
             board[y][x] != 0:
 
         if rot == "STANDING":
             return True
         elif rot == "LAYING_Y":
-            if y+1 < MAP_ROW and board[y+1][x] != 0 :
+            if y+1 < MATRIX_X and board[y+1][x] != 0 :
                 return True
         elif rot == "LAYING_X":
-            if x+1 < MAP_COL and board[y][x+1] != 0 :
+            if x+1 < MATRIX_Y and board[y][x+1] != 0 :
                 return True
         else: # case SPLIT
             x1 = block.x1
             y1 = block.y1
 
             if x1 >= 0 and y1 >= 0 and \
-                y1 < MAP_ROW and x1 < MAP_COL and \
+                y1 < MATRIX_X and x1 < MATRIX_Y and \
                 board[y1][x1] != 0:
                     return True
 
@@ -759,27 +590,23 @@ def BEST(block):
 
 
 
+if __name__ == "__main__":
+    # Main code starts here...
+    passState = []
+    stage = '01'
+    MATRIX_X = 6
+    MATRIX_Y = 10
+    xStart = 2
+    yStart = 2
+    sourceMap = []
+    boardState = []
 
-# START PROGRAM HERE
-passState = []
+    # MATRIX_X, MATRIX_Y, xStart, yStart, sourceMap, boardState \
+                            # = readMap('stage01.txt')
 
-MAP_ROW, MAP_COL, xStart, yStart, sourceMap, ManaBoa \
-                        = readMap('map/map'+sys.argv[1:][0]+'.txt')
+    sourceMap, boardState = readMatrix(MATRIX_X,MATRIX_Y,xStart,yStart,sourceMap, boardState, 'stage01.txt')
 
-block = Block(xStart, yStart, "STANDING", None, sourceMap)
+    block = Block(xStart, yStart, "STANDING", None, sourceMap)
 
-if sys.argv[1:][1] == "DFS":
-    print("Solve DFS")  
     DFS(block)
-
-elif sys.argv[1:][1] == "BFS":
-    print("Solve BFS")
-    BFS(block)
-
-elif sys.argv[1:][1] == "BEST":
-    print("Solve Best")
-    BEST(block)
-
-else:
-    print("Wrong algorithms argument!")
 
