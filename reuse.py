@@ -9,18 +9,17 @@ def readMatrix(MATRIX_X,MATRIX_Y,xStart,yStart,sourceMap, boardState,fileMap):
             if countMapLine > MATRIX_X: break
 
         # read managedBoard
-        manaBoa = []
-        for line in f: # read manaBoa
+        boardState = []
+        for line in f: # read boardState
             # 2 2 4 4 4 5
-            manaBoa.append([int(x) for x in line.split()])
+            boardState.append([int(x) for x in line.split()])
 
     print("\nInitial Game MATRIX looks like this:")
     for item in sourceMap:
         print(item)
     print("Start at (",xStart, ",", yStart,")")
-    print("ManaBoa:")
-    for item in manaBoa:
+    print("Board State:")
+    for item in boardState:
         print(item)
     print("======================================")
-    # return MATRIX_X, MATRIX_Y, xStart, yStart, sourceMap, manaBoa
-    return sourceMap, manaBoa
+    return sourceMap, boardState

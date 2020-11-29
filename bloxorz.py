@@ -1,53 +1,14 @@
 # -*- coding: utf-8 -*- 
-# AI Assignment 1 - Server playing game Bloxorz
-# Author: Thanh Hung & Luan Pham & Hoang Gas
-
-# Some clarify
-# 0: None
-# 1: Normal
-# 2: Đo đỏ
-# 3: Chữ X  (T C O)
-# 4: Cục tròn đặc (only đóng).
-# 5: Cục tròn đặc (T C O)
-# 6: Cục tròn đặc (only mở)
-# 7: Cục phân thân
-# 8: Chữ X  (only mở)
-# 9: Lỗ chiến thắng
+# ACI Assignment 1 - Bloxorz Stage 1 Game by DFS search
+# Author: Aditya Mehta, Ankit Gupta and Hitesh Gupta
 
 import copy
 import sys
 import queue as Q
 from reuse import readMatrix
 from block import Block
-
-# def readMap(fileMap):
-#     with open(fileMap) as f:
-#         MATRIX_X, MATRIX_Y, xStart, yStart = [int(x) for x in next(f).split()] # read first line
-#         sourceMap = []
-#         countMapLine = 1
-#         for line in f: # read map
-#             countMapLine += 1
-#             sourceMap.append([int(x) for x in line.split()])
-#             if countMapLine > MATRIX_X: break
-
-#         # read managedBoard
-#         boardState = []
-#         for line in f: # read boardState
-#             # 2 2 4 4 4 5
-#             boardState.append([int(x) for x in line.split()])
-
-#     print("\nInitial Game MATRIX looks like this:")
-#     for item in sourceMap:
-#         print(item)
-#     print("Start at (",xStart, ",", yStart,")")
-#     print("boardState:")
-#     for item in boardState:
-#         print(item)
-#     print("======================================")
-#     return MATRIX_X, MATRIX_Y, xStart, yStart, sourceMap, boardState
-            
     
-# Case 3: Chữ X
+# Case 3:
 def isNumberThree(block,x,y):
     board = block.board
 
@@ -55,8 +16,7 @@ def isNumberThree(block,x,y):
 
         if (x,y) ==  (item[0], item[1]):
 
-            # TOGGLEEEE
-
+            # TOGGLE
             numToggle = item[2]   # num toggle
             index = 2   # index to check more element
 
@@ -70,8 +30,7 @@ def isNumberThree(block,x,y):
         
             index = index + 1 + 2 * numToggle
 
-            # CLOSEEEE
-
+            # CLOSE
             # check if "item" has more element
             if index < len(item):   # case has more
 
@@ -87,7 +46,7 @@ def isNumberThree(block,x,y):
                 index = index + 1 + 2 * numClose
             
 
-            # OPEENNNN
+            # OPEEN
 
             # check if "item" has more element
             if index < len(item):   # case also has more item
@@ -102,7 +61,7 @@ def isNumberThree(block,x,y):
 
 
 
-# Case 4: Cục tròn đặc (only đóng).
+# Case 4:
 def isNumberFour(block,x,y):
     board = block.board
     
@@ -116,7 +75,7 @@ def isNumberFour(block,x,y):
                 bY = item[2*i+4]
                 board[bX][bY] = 0
 
-# Case 5: Cục tròn đặc (toggle)
+# Case 5:
 def isNumberFive(block,x,y):
     board = block.board
 
@@ -137,7 +96,7 @@ def isNumberFive(block,x,y):
             
             index = index + 1 + 2 * numToggle
 
-            # CLOSEEEE
+            # CLOSE
 
             # check if "item" has more element
             if index < len(item):   # case has more
@@ -153,9 +112,7 @@ def isNumberFive(block,x,y):
 
                 index = index + 1 + 2 * numClose
             
-
-            # OPEENNNN
-
+            # OPEEN
             # check if "item" has more element
             if index < len(item):   # case also has more item
                 # get num open
@@ -168,7 +125,7 @@ def isNumberFive(block,x,y):
                     board[bX][bY]=1
 
 
-# Case 6: Cục tròn đặc (only mở)
+# Case 6:
 def isNumberSix(block,x,y):
     board = block.board
 
@@ -180,7 +137,7 @@ def isNumberSix(block,x,y):
                 bY = item[2*i+4]
                 board[bX][bY] = 1
 
-# Case 7: Cục phân thân
+# Case 7:
 def isNumberSeven(block,x,y):  
     board = block.board
     array = []    
@@ -198,7 +155,7 @@ def isNumberSeven(block,x,y):
 
     block.rot = "SPLIT"
 
-# Case 8: Chữ X (only mở)
+# Case 8:
 def isNumberEight(block,x,y):
     board = block.board
 
@@ -228,15 +185,15 @@ def isValidBlock(block):
         board = block.board
         
         
-        # Case 2: Đo đỏ
+        # Case 2: 
         if rot == "STANDING" and board[y][x] == 2:
             return False 
 
-        # Case 3: Chữ X
+        # Case 3: 
         if rot == "STANDING" and board[y][x] == 3:
             isNumberThree(block,x,y)
         
-        # Case 4: Cục tròn đặc (only đóng).
+        # Case 4: 
         if board[y][x] == 4:
             isNumberFour(block,x,y)
         if rot == "LAYING_X" and board[y][x+1] == 4:
@@ -247,7 +204,7 @@ def isValidBlock(block):
             isNumberFour(block,x1,y1)
 
 
-        # Case 5: Cục tròn đặc (toggle)
+        # Case 5: 
         if board[y][x] == 5:
             isNumberFive(block,x,y)
         if rot == "LAYING_X" and board[y][x+1] == 5:
@@ -257,7 +214,7 @@ def isValidBlock(block):
         if rot == "SPLIT" and board[y1][x1] == 5:
             isNumberFive(block,x1,y1)
 
-        # Case 6: Cục tròn đặc (only mở)
+        # Case 6: 
         if board[y][x] == 6:
             isNumberSix(block,x,y)
         if rot == "LAYING_X" and board[y][x+1] == 6:
@@ -267,7 +224,7 @@ def isValidBlock(block):
         if rot == "SPLIT" and board[y1][x1] == 6:
             isNumberSix(block,x1,y1)
 
-        # Case 7: Phân thân 
+        # Case 7: 
         if rot == "STANDING" and board[y][x] == 7:
             isNumberSeven(block,x,y)
         # Case7_1: MERGE BLOCK
@@ -290,7 +247,7 @@ def isValidBlock(block):
                 block.rot = "LAYING_Y"
                 block.y   = y1
 
-        # Case 8: Chữ X (only mở)
+        # Case 8:
         if rot == "STANDING" and board[y][x] == 8:
             isNumberEight(block,x,y)
             
@@ -375,8 +332,8 @@ def move(Stack, block, flag):
 
 def printSuccessRoad(block):
     
-    print("\nTHIS IS SUCCESS ROAD")
-    print("================================")
+    print("\nHere is the final Success path:")
+    print("==================================")
     
     successRoad = [block]
     temp = block.parent
@@ -397,7 +354,7 @@ def printSuccessRoad(block):
     step = 0
     for item in successRoad:
         step += 1
-        print("\nStep:", step, end=' >>>   ')
+        print("\nStep:", step, end=' ==> ')
         item.disPlayPosition()
         print("=============================")
         item.disPlayBoard()
@@ -413,16 +370,16 @@ def DFS(block):
     passState.append(block)
     
     virtualStep = 0
-
+    print ("Stack length is :", len(Stack))
     while Stack:
         current = Stack.pop()
-        #current.disPlayPosition()
-        #current.disPlayBoard()
+        # current.disPlayPosition()
+        # current.disPlayBoard()
 
         if isGoal(current):
             printSuccessRoad(current)
-            print("COMSUME", virtualStep, "VIRTUAL STEP")
-            print("SUCCESS")
+            print("Steps Taken:", virtualStep, "VIRTUAL STEP")
+            print("Completed successfully")
             return True
         else:
             if current.rot != "SPLIT":
@@ -446,149 +403,7 @@ def DFS(block):
                 move(Stack,current.split1_move_down(), "down1")
     return False
 
-# solve BFS
-def BFS(block):
-
-    board = block.board
-    Queue = []
-    Queue.append(block)
-    passState.append(block)
-
-    virtualStep = 0
-
-    while Queue:
-        current = Queue.pop(0)
-        #current.disPlayPosition()
-        #current.disPlayBoard()
-
-        if isGoal(current):
-            printSuccessRoad(current)
-            print("SUCCESS")
-            print("COMSUME", virtualStep, "VIRTUAL STEP")
-            return True
-
-        if current.rot != "SPLIT":
-            virtualStep += 4
-
-            move(Queue,current.move_up(), "up")
-            move(Queue,current.move_right(), "right")
-            move(Queue,current.move_down(), "down")
-            move(Queue,current.move_left(), "left")
-        else: 
-            virtualStep += 8
-
-            move(Queue,current.split_move_left(), "left0")
-            move(Queue,current.split_move_right(), "right0")
-            move(Queue,current.split_move_up(), "up0")
-            move(Queue,current.split_move_down(), "down0")
-            
-            move(Queue,current.split1_move_left(), "left1")
-            move(Queue,current.split1_move_right(), "right1")
-            move(Queue,current.split1_move_up(), "up1")
-            move(Queue,current.split1_move_down(), "down1")
-    return False
-
-
-def evalFunction(block):
-
-    #  local definition
-    x   = block.x
-    y   = block.y
-    x1  = block.x1
-    y1  = block.y1
-    rot = block.rot
-    board = block.board
-
-    # get goal
-    (xGoal, yGoal) = (0, 0)
-    for yG in range(len(board)):
-        for xG in range(len(board[0])):
-            if board[y][x] == '9':
-                (xGoal, yGoal) = (xG, yG)
-
-    # calc distance pos-goal
-    distance = 0
-
-    if rot == "SPLIT":
-
-        distance1 = (x-xGoal)*(x-xGoal)+(y-yGoal)*(y-yGoal)
-        distance2 = (x1-xGoal)*(x1-xGoal)+(y1-yGoal)*(y1-yGoal)
-        distance = (distance1+distance2)/2
-
-    else:
-        # (x1 - x2)^2 + (y1 - y2) ^ 2
-        distance = (x-xGoal)*(x-xGoal)+(y-yGoal)*(y-yGoal)
-
-    return int(distance)
-
-def moveBest(BestQueue, block, flag):
-    
-    if isValidBlock(block):
-        if isVisited(block):            
-            return False
-        
-        EvalCur = evalFunction(block)
-        BestQueue.put((EvalCur, block))
-        passState.append(block)
-
-        return True
-    return False
-            
-
-def BEST(block):
-    
-    # create priority queue
-    BestQueue = Q.PriorityQueue()
-
-    startEval = evalFunction(block)
-
-    # insert start node
-    BestQueue.put((startEval, block))
-    passState.append(block)
-    
-    virtualStep = 0
-
-    # until priority queue is empty
-    while BestQueue.not_empty:
-
-        item   = BestQueue.get()  # item = (block, distance)
-        iDista = item[0]
-        iBlock = item[1]
-
-        # if goal
-        if isGoal(iBlock):
-
-            printSuccessRoad(iBlock)
-            print("SUCCESS")
-            print("COMSUME", virtualStep, "VIRTUAL STEP")
-
-            return True
-
-        # put all new operator to queue
-        if iBlock.rot != "SPLIT":
-            
-            virtualStep += 4
-
-            # try up
-            moveBest(BestQueue, iBlock.move_up(), "up") 
-            moveBest(BestQueue, iBlock.move_down(), "down") 
-            moveBest(BestQueue, iBlock.move_right(), "right") 
-            moveBest(BestQueue, iBlock.move_left(), "left") 
-        else: 
-           
-            virtualStep += 8
-
-            moveBest(BestQueue, iBlock.split_move_left(), "left0")
-            moveBest(BestQueue, iBlock.split_move_right(), "right0")
-            moveBest(BestQueue, iBlock.split_move_up(), "up0")
-            moveBest(BestQueue, iBlock.split_move_down(), "down0")
-            
-            moveBest(BestQueue, iBlock.split1_move_left(), "left1")
-            moveBest(BestQueue, iBlock.split1_move_right(), "right1")
-            moveBest(BestQueue, iBlock.split1_move_up(), "up1")
-            moveBest(BestQueue, iBlock.split1_move_down(), "down1")
-
-
+# 
 
 if __name__ == "__main__":
     # Main code starts here...
@@ -601,12 +416,7 @@ if __name__ == "__main__":
     sourceMap = []
     boardState = []
 
-    # MATRIX_X, MATRIX_Y, xStart, yStart, sourceMap, boardState \
-                            # = readMap('stage01.txt')
-
     sourceMap, boardState = readMatrix(MATRIX_X,MATRIX_Y,xStart,yStart,sourceMap, boardState, 'stage01.txt')
-
     block = Block(xStart, yStart, "STANDING", None, sourceMap)
 
     DFS(block)
-
