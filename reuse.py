@@ -17,9 +17,9 @@ def readMatrix(MATRIX_X,MATRIX_Y,xStart,yStart,sourceMap, boardState,fileMap):
     print("\nInitial Game MATRIX looks like this:")
     for item in sourceMap:
         print(item)
-    print("Start at (",xStart, ",", yStart,")")
-    print("Board State:")
-    for item in boardState:
-        print(item)
+    print("\nStart at (",xStart, ",", yStart,")")
+    # print("Board State:")
+    # for item in boardState:
+        # print(item)
     print("======================================")
     return sourceMap, boardState
