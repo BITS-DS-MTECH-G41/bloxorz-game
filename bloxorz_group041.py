@@ -97,30 +97,6 @@ class PlayerBlock:
     def printBlockPos(self):
         print("Block Position:",self.pos, "[X,Y]: [",self.x + 1, self.y + 1,"]")
 
-
-def readBoard(MATRIX_X,MATRIX_Y,xStart,yStart,sourceMap, boardState,stgFile):
-    '''Reads the initial input file'''
-    with open(stgFile) as f:
-        sourceMap = []
-        countMapLine = 1
-        for line in f: 
-            countMapLine += 1
-            sourceMap.append([int(x) for x in line.split()])
-            if countMapLine > MATRIX_X: break
-
-        # Read current Board state
-        boardState = []
-        for line in f: # Read board State
-            boardState.append([int(x) for x in line.split()])
-
-    print("\nInitial Game MATRIX looks like this:")
-    for item in sourceMap:
-        print(item)
-    print("\nStart at (",xStart, ",", yStart,")")
-    print("======================================")
-    return sourceMap, boardState
-
-
 # This method is to validate if the Block is in valid state 
 def chkValidBlock(block):
     if chkFloor(block):           
@@ -240,10 +216,19 @@ if __name__ == "__main__":
     MATRIX_Y = 10
     xStart = 2
     yStart = 2
-    sourceMap = []
+    sourceMap = [[1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+                [1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                [0, 0, 0, 0, 0, 1, 1, 9, 1, 1],
+                [0, 0, 0, 0, 0, 0, 1, 1, 1, 0]]
     boardState = []
-
-    sourceMap, boardState = readBoard(MATRIX_X,MATRIX_Y,xStart,yStart,sourceMap, boardState, 'stage01.txt')
+    
+    print("\nInitial Game MATRIX looks like this:")
+    for item in sourceMap:
+        print(item)
+    print("\nStart at (",xStart, ",", yStart,")")
+    print("======================================")
     block = PlayerBlock(xStart - 1, yStart - 1, "Standing_POS", None, sourceMap)
 
     PlayStage1(block)
