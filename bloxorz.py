@@ -146,6 +146,6 @@ if __name__ == "__main__":
     boardState = []
 
     sourceMap, boardState = readBoard(MATRIX_X,MATRIX_Y,xStart,yStart,sourceMap, boardState, 'stage01.txt')
-    block = Block(xStart, yStart, "Standing_POS", None, sourceMap)
+    block = Block(xStart - 1, yStart - 1, "Standing_POS", None, sourceMap)
 
     PlayStage1(block)
