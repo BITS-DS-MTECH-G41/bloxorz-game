@@ -1,13 +1,18 @@
-# -*- coding: utf-8 -*- 
-# ACI Assignment 1 - Bloxorz Stage 1 Game by DFS search
-# Author: Aditya Mehta, Ankit Gupta and Hitesh Gupta
+#========================================
+# ACI Assignment 1 - Bloxorz Stage 1 Game by Uninformed (Depth First) search - DFS
+#========================================
+# Contributors:
+# ------------ 
+#  Aditya Mehta (2019ad04030)
+#  Ankit Gupta  (2019ad04026)
+#  Hitesh Gupta (2019ad04027)
+#========================================
 
-import copy
+#Importing required libraries, project classes
 import sys
-# import queue as Q
-from reuse import readMatrix
+import copy
+from readboard import readBoard
 from block import Block    
-
 
 # chkValidBlock
 def chkValidBlock(block):
@@ -92,10 +97,13 @@ def printSuccessPath(block):
         print("========================================================")
         item.printBoard()
 
+    print("\n")
+    print("=======================================")
     print("Actual Steps Taken: ",step,"Steps...!!!")
+    print("=======================================")
     
-# DFS search algorithm
-def DFS(block):
+# Depth First Search algorithm implemented
+def PlayStage1(block):
 
     # board = block.board
     Stack = []
@@ -110,8 +118,8 @@ def DFS(block):
         # current.printBoard()
         if chkIfGoal(current):
             printSuccessPath(current)
-            print("Steps Taken:", virtualSteps, "Total Explored steps")
-            print("Completed successfully")
+            print("Total Steps Explored:", virtualSteps, "steps")
+            print("\n======== Completed successfully ==========")
             return True
         else:
             virtualSteps += 4
@@ -137,7 +145,7 @@ if __name__ == "__main__":
     sourceMap = []
     boardState = []
 
-    sourceMap, boardState = readMatrix(MATRIX_X,MATRIX_Y,xStart,yStart,sourceMap, boardState, 'stage01.txt')
+    sourceMap, boardState = readBoard(MATRIX_X,MATRIX_Y,xStart,yStart,sourceMap, boardState, 'stage01.txt')
     block = Block(xStart, yStart, "Standing_POS", None, sourceMap)
 
-    DFS(block)
+    PlayStage1(block)

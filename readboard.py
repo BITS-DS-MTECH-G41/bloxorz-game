@@ -1,25 +1,20 @@
-def readMatrix(MATRIX_X,MATRIX_Y,xStart,yStart,sourceMap, boardState,fileMap):
-    with open(fileMap) as f:
-        MATRIX_X, MATRIX_Y, xStart, yStart = [int(x) for x in next(f).split()] # read first line
+def readBoard(MATRIX_X,MATRIX_Y,xStart,yStart,sourceMap, boardState,stgFile):
+    with open(stgFile) as f:
         sourceMap = []
         countMapLine = 1
-        for line in f: # read map
+        for line in f: 
             countMapLine += 1
             sourceMap.append([int(x) for x in line.split()])
             if countMapLine > MATRIX_X: break
 
-        # read managedBoard
+        # read Board state
         boardState = []
         for line in f: # read boardState
-            # 2 2 4 4 4 5
             boardState.append([int(x) for x in line.split()])
 
     print("\nInitial Game MATRIX looks like this:")
     for item in sourceMap:
         print(item)
     print("\nStart at (",xStart, ",", yStart,")")
-    # print("Board State:")
-    # for item in boardState:
-        # print(item)
     print("======================================")
     return sourceMap, boardState
