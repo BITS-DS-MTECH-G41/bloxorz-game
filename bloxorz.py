@@ -3,7 +3,7 @@
 #========================================
 # Contributors:
 # ------------ 
-#  Aditya Mehta (2019ad04030)
+#  Aditya Mehta (2019ad04031)
 #  Ankit Gupta  (2019ad04026)
 #  Hitesh Gupta (2019ad04027)
 #========================================
@@ -92,7 +92,7 @@ def printSuccessPath(block):
     step = 0
     for item in successRoad:
         step += 1
-        print("\nStep:", step, end=' ==> ')
+        print("\nStep:", step, " ==> ")
         item.printBlockPos()
         print("========================================================")
         item.printBoard()
@@ -110,24 +110,22 @@ def PlayStage1(block):
     Stack.append(block)
     passState.append(block)
     
-    virtualSteps = 0
+    generatedSteps = 0
     print ("Stack length is :", len(Stack))
     while Stack:
-        current = Stack.pop()
-        # current.printBlockPos()
-        # current.printBoard()
-        if chkIfGoal(current):
-            printSuccessPath(current)
-            print("Total Steps Explored:", virtualSteps, "steps")
+        currentBlockPos = Stack.pop()
+        if chkIfGoal(currentBlockPos):
+            printSuccessPath(currentBlockPos)
+            print("Total Steps Explored:", generatedSteps, "steps")
             print("\n======== Completed successfully ==========")
             return True
         else:
-            virtualSteps += 4
+            generatedSteps += 4
 
-            move(Stack,current.moveUp(), "up")
-            move(Stack,current.moveRight(), "right")
-            move(Stack,current.moveDown(), "down")
-            move(Stack,current.moveLeft(), "left")
+            move(Stack,currentBlockPos.moveUp(), "up")
+            move(Stack,currentBlockPos.moveRight(), "right")
+            move(Stack,currentBlockPos.moveDown(), "down")
+            move(Stack,currentBlockPos.moveLeft(), "left")
 
     return False
 
