@@ -4,7 +4,7 @@
 
 import copy
 import sys
-import queue as Q
+# import queue as Q
 from reuse import readMatrix
 from block import Block    
 
@@ -28,12 +28,12 @@ def chkFloor(block):
             y < MATRIX_X and x < MATRIX_Y and \
             board[y][x] != 0:
 
-        if pos == "STANDING":
+        if pos == "Standing_POS":
             return True
-        elif pos == "LAYING_Y":
+        elif pos == "Vertical_POS":
             if y+1 < MATRIX_X and board[y+1][x] != 0 :
                 return True
-        elif pos == "LAYING_X":
+        elif pos == "Horizontal_POS":
             if x+1 < MATRIX_Y and board[y][x+1] != 0 :
                 return True
     else:
@@ -46,7 +46,7 @@ def chkIfGoal(block):
     pos = block.pos
     board = block.board
 
-    if pos == "STANDING" and  \
+    if pos == "Standing_POS" and  \
         board[y][x] == 9:
         return True
     else:
@@ -79,8 +79,7 @@ def printSuccessPath(block):
     temp = block.parent
     
     while temp != None:
-        newBlock = Block(temp.x, temp.y, \
-            temp.pos, temp.parent, temp.board)
+        newBlock = Block(temp.x, temp.y, temp.pos, temp.parent, temp.board)
         successRoad = [newBlock] + successRoad
         
         temp = temp.parent
@@ -90,7 +89,7 @@ def printSuccessPath(block):
         step += 1
         print("\nStep:", step, end=' ==> ')
         item.printBlockPos()
-        print("=====================================================")
+        print("========================================================")
         item.printBoard()
 
     print("Actual Steps Taken: ",step,"Steps...!!!")
@@ -103,7 +102,7 @@ def DFS(block):
     Stack.append(block)
     passState.append(block)
     
-    virtualStep = 0
+    virtualSteps = 0
     print ("Stack length is :", len(Stack))
     while Stack:
         current = Stack.pop()
@@ -111,11 +110,11 @@ def DFS(block):
         # current.printBoard()
         if chkIfGoal(current):
             printSuccessPath(current)
-            print("Steps Taken:", virtualStep, "Total Explored steps")
+            print("Steps Taken:", virtualSteps, "Total Explored steps")
             print("Completed successfully")
             return True
         else:
-            virtualStep += 4
+            virtualSteps += 4
 
             move(Stack,current.moveUp(), "up")
             move(Stack,current.moveRight(), "right")
@@ -139,6 +138,6 @@ if __name__ == "__main__":
     boardState = []
 
     sourceMap, boardState = readMatrix(MATRIX_X,MATRIX_Y,xStart,yStart,sourceMap, boardState, 'stage01.txt')
-    block = Block(xStart, yStart, "STANDING", None, sourceMap)
+    block = Block(xStart, yStart, "Standing_POS", None, sourceMap)
 
     DFS(block)

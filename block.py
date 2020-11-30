@@ -20,61 +20,61 @@ class Block:
     def moveUp(self):
         tempBlock = Block(self.x, self.y, self.pos, self, self.board)
 
-        if self.pos == "STANDING":
+        if self.pos == "Standing_POS":
             tempBlock.y -= 2 
-            tempBlock.pos = "LAYING_Y"
+            tempBlock.pos = "Vertical_POS"
 
-        elif tempBlock.pos == "LAYING_X":
+        elif tempBlock.pos == "Horizontal_POS":
             tempBlock.y -= 1
         
-        elif tempBlock.pos == "LAYING_Y":
+        elif tempBlock.pos == "Vertical_POS":
             tempBlock.y -= 1
-            tempBlock.pos = "STANDING"
+            tempBlock.pos = "Standing_POS"
         
         return tempBlock 
 
     def moveDown(self):
         tempBlock = Block(self.x, self.y, self.pos, self, self.board)
 
-        if tempBlock.pos == "STANDING":
+        if tempBlock.pos == "Standing_POS":
             tempBlock.y += 1
-            tempBlock.pos = "LAYING_Y"
+            tempBlock.pos = "Vertical_POS"
 
-        elif tempBlock.pos == "LAYING_X":
+        elif tempBlock.pos == "Horizontal_POS":
             tempBlock.y += 1
 
-        elif tempBlock.pos == "LAYING_Y":
+        elif tempBlock.pos == "Vertical_POS":
             tempBlock.y += 2
-            tempBlock.pos = "STANDING"
+            tempBlock.pos = "Standing_POS"
         return tempBlock 
 
     def moveRight(self):
         tempBlock = Block(self.x, self.y, self.pos, self, self.board)
     
-        if tempBlock.pos == "STANDING":
+        if tempBlock.pos == "Standing_POS":
             tempBlock.x += 1
-            tempBlock.pos = "LAYING_X"
+            tempBlock.pos = "Horizontal_POS"
 
-        elif tempBlock.pos == "LAYING_X":
+        elif tempBlock.pos == "Horizontal_POS":
             tempBlock.x += 2
-            tempBlock.pos = "STANDING"
+            tempBlock.pos = "Standing_POS"
 
-        elif tempBlock.pos == "LAYING_Y":
+        elif tempBlock.pos == "Vertical_POS":
              tempBlock.x += 1
         return tempBlock
 
     def moveLeft(self):
         tempBlock = Block(self.x, self.y, self.pos, self, self.board)
 
-        if tempBlock.pos == "STANDING":
-            tempBlock.pos = "LAYING_X"
+        if tempBlock.pos == "Standing_POS":
+            tempBlock.pos = "Horizontal_POS"
             tempBlock.x -= 2
 
-        elif tempBlock.pos == "LAYING_X":
+        elif tempBlock.pos == "Horizontal_POS":
             tempBlock.x -= 1
-            tempBlock.pos = "STANDING"
+            tempBlock.pos = "Standing_POS"
 
-        elif tempBlock.pos == "LAYING_Y":
+        elif tempBlock.pos == "Vertical_POS":
             tempBlock.x -= 1
 
         return tempBlock 
@@ -97,9 +97,9 @@ class Block:
             print("",end='  ')
             for j in range(len(board[i])): # for COL in a ROW
 
-                if (i==y and j==x and pos=="STANDING") or \
-                        ((i==y and j==x) or (i==y and j==x+1) and pos=="LAYING_X") or \
-                        ((i==y and j==x) or (i==y+1 and j==x) and pos=="LAYING_Y"):
+                if (i==y and j==x and pos=="Standing_POS") or \
+                        ((i==y and j==x) or (i==y and j==x+1) and pos=="Horizontal_POS") or \
+                        ((i==y and j==x) or (i==y+1 and j==x) and pos=="Vertical_POS"):
 
                     print("x",end=' ')
 
